@@ -1248,7 +1248,12 @@ void GraphingWindow::appendToGraph(GraphParams &params, CANFrame &frame, QVector
     {
         params.strideSoFar = 0;
         int64_t tempVal; //64 bit temp value.
-        tempVal = Utility::processIntegerSignal(frame.payload(), params.startBit, params.numBits, params.intelFormat, params.isSigned); //& params.mask;
+        tempVal = Utility::processIntegerSignal(frame.payload(), params.startBit, params.numBits, params.intelFormat, params.isSigned);
+        if (params.mask)
+        {
+            tempVal &= params.mask;
+        }
+
         double xVal, yVal;
         if (Utility::timeStyle == TS_SECONDS)
         {
@@ -1383,7 +1388,12 @@ void GraphingWindow::createGraph(GraphParams &params, bool createGraphParam)
             }
             else qDebug() << "Signal in the frame!";
         }
-        tempVal = Utility::processIntegerSignal(frameCache[k].payload(), sBit, bits, intelFormat, isSigned); //& params.mask;
+        tempVal = Utility::processIntegerSignal(frameCache[k].payload(), sBit, bits, intelFormat, isSigned);
+        if (params.mask)
+        {
+            tempVal &= params.mask;
+        }
+        
         //qDebug() << tempVal;
         y = (tempVal * params.scale) + params.bias;
         params.y.append( y );
